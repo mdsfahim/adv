@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src='//libtl.com/sdk.js' data-zone='9661177' data-sdk='show_9661177'></script>
+  <script src='//libtl.com/sdk.js' data-zone='9683040' data-sdk='show_9683040'></script>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1435,18 +1435,20 @@ body.header-hidden .section,
       padding: 1rem;
       border-radius: 1rem 1rem 0 0;
     }
-    #marqueeText {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 15s linear infinite;
-      color: #B8860B;
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
+    /* Add this to your style section */
+.marquee-text-anim {
+    display: inline-block;
+    padding-left: 100%;
+    white-space: nowrap;
+    /* REMOVED '30s' - We let JS handle the time */
+    animation: marquee linear infinite; 
+}
+
+/* Ensure the keyframes exist (You already have this in your file, but double-check) */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
 
     #androidTopNotification {
       position: fixed;
@@ -2938,27 +2940,7 @@ body.header-hidden .section,
     .status-pending { background: #fef3c7; color: #d97706; }
     .status-success { background: #d1fae5; color: #059669; }
     .status-failed { background: #fee2e2; color: #dc2626; } 
-    /* ================= ABOUT MODAL STYLES ================= */
-
-    #aboutModal {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(15, 23, 42, 0.6); /* Dark Blue overlay */
-      backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    #aboutModal.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
+ 
     .about-card {
       background: white;
       width: 90%;
@@ -3674,25 +3656,32 @@ body.header-hidden .section,
 .icon-bg-earn { background: #ecfdf5; color: #10b981; }
 .icon-bg-error { background: #fef2f2; color: #ef4444; }
 .icon-bg-info { background: #eff6ff; color: #3b82f6; }
-/* Ensure the history list is scrollable and visible */
-#notif-history-section.active {
-    display: block !important;
-    position: absolute;
+
+/* REPLACE YOUR EXISTING #notif-history-section CSS WITH THIS */
+#notif-history-section {
+    display: none; /* Hidden by default */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2000;
+    z-index: 99999 !important; /* Force on top of everything */
     background: #f8fafc;
     overflow-y: auto;
-    padding-bottom: 100px !important; /* Space for bottom nav */
+    padding-bottom: 80px;
 }
 
-/* Ensure the list container has some breathing room */
+#notif-history-section.active {
+    display: block !important; /* Show only when active */
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* Ensure the list inside has proper spacing */
 #notif-history-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding-bottom: 80px;
 }
 /* ================= SCROLLBAR CONTROL ================= */
 
@@ -3820,7 +3809,7 @@ body.header-hidden .section,
   </div>
 
   <!-- Telegram Warning Popup -->
- <div id="telegramWarningPopup" style="display: none;">
+<div id="telegramWarningPopup" style="display: none;">
     <div class="security-pattern"></div>
 
     <div class="warning-card">
@@ -4056,7 +4045,7 @@ body.header-hidden .section,
           <i class="fas fa-bolt"></i>
         </div>
         <div class="flex-1 overflow-hidden">
-          <p class="text-xs font-bold text-slate-700 truncate" id="marqueeTextHome">
+          <p class="text-xs font-bold text-slate-700 marquee-text-anim" id="marqueeTextHome">
             Daily Bonus: Tasks pay +10% today!
           </p>
         </div>
@@ -4110,7 +4099,7 @@ body.header-hidden .section,
           <span class="action-label">History</span>
         </button>
 
-        <button class="action-btn" onclick="window.open('https://t.me/AdVault_Group', '_blank')">
+      <button class="action-btn" onclick="openCommunityGroup()">
           <div class="icon-sq text-orange-500">
             <i class="fas fa-headset"></i>
           </div>
@@ -4580,28 +4569,28 @@ body.header-hidden .section,
   <div class="menu-label">Activity & Support</div>
   <div class="menu-group">
     <div class="menu-item" onclick="showSection('notif-history-section')">
-      <div class="menu-icon bg-amber-50 text-amber-600">
+    <div class="menu-icon bg-amber-50 text-amber-600">
         <i class="fas fa-bell"></i>
-      </div>
-      <div class="flex-1">
+    </div>
+    <div class="flex-1">
         <p class="text-sm font-bold text-slate-800">Alert History</p>
         <p class="text-[10px] text-slate-400">View your recent notifications</p>
-      </div>
-      <i class="fas fa-chevron-right text-[10px] text-slate-300"></i>
     </div>
+    <i class="fas fa-chevron-right text-[10px] text-slate-300"></i>
+</div>
 
-    <div class="menu-item" onclick="window.open('https://t.me/AdVault_Group', '_blank')">
-      <div class="menu-icon bg-sky-50 text-sky-500">
-        <i class="fab fa-telegram-plane"></i>
-      </div>
-      <div class="flex-1">
-        <p class="text-sm font-bold text-slate-800">Community Support</p>
-        <p class="text-[10px] text-slate-400">Join official Telegram group</p>
-      </div>
-      <i class="fas fa-external-link-alt text-[10px] text-slate-300"></i>
-    </div>
+    <div class="menu-item" onclick="openCommunityGroup()">
+  <div class="menu-icon bg-sky-50 text-sky-500">
+    <i class="fab fa-telegram-plane"></i>
+  </div>
+  <div class="flex-1">
+    <p class="text-sm font-bold text-slate-800">Community Support</p>
+    <p class="text-[10px] text-slate-400">Join official Telegram group</p>
+  </div>
+  <i class="fas fa-external-link-alt text-[10px] text-slate-300"></i>
+</div>
 
-    <div class="menu-item" onclick="toggleAboutModal()">
+  <div class="menu-item" onclick="openAboutModal()">
       <div class="menu-icon bg-slate-50 text-slate-500">
         <i class="fas fa-info-circle"></i>
       </div>
@@ -4800,46 +4789,46 @@ body.header-hidden .section,
     <h3>4. Data Security</h3>
     <p>We implement standard security measures to protect your information. However, no method of transmission over the Internet is 100% secure.</p>
   </div>
-  <div id="aboutModal">
-    <div class="about-card">
+ <div id="aboutModal" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+    <div class="bg-white w-[90%] max-w-[340px] rounded-[2rem] p-8 text-center relative transform scale-90 transition-all duration-300 shadow-2xl" id="aboutModalCard">
       
-      <button class="close-icon-btn" onclick="toggleAboutModal()">
+      <button class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors" onclick="closeAboutModal()">
         <i class="fas fa-times"></i>
       </button>
 
-      <div class="app-logo-wrapper">
-          <img src="https://worldnews24x7.infy.uk/image/advault3.png" alt="App Logo" class="w-full h-full object-cover">
+      <div class="w-20 h-20 mx-auto mb-6 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center overflow-hidden p-2">
+          <img src="https://worldnews24x7.infy.uk/image/advault3.png" alt="App Logo" class="w-full h-full object-contain">
       </div>
 
-      <h2 class="text-xl font-extrabold text-slate-800">AdVault</h2>
-      <p class="text-xs text-slate-400 font-medium">Premium Earning Platform</p>
+      <h2 class="text-2xl font-extrabold text-slate-800 mb-1">AdVault</h2>
+      <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-6">Premium Earning App</p>
 
-      <div class="info-list">
-          <div class="info-row">
-              <span class="info-label">App Version</span>
-              <span class="info-val">2.5.0 (Beta)</span>
+      <div class="border border-slate-100 rounded-xl overflow-hidden mb-6">
+          <div class="flex justify-between px-4 py-3 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Version</span>
+              <span class="text-sm text-slate-800 font-bold" id="about-version">Loading...</span>
           </div>
-          <div class="info-row">
-              <span class="info-label">Last Updated</span>
-              <span class="info-val">Jan 25, 2026</span>
+          <div class="flex justify-between px-4 py-3 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Updated</span>
+              <span class="text-sm text-slate-800 font-bold" id="about-date">Loading...</span>
           </div>
-          <div class="info-row">
-              <span class="info-label">Developer</span>
-              <span class="info-val">AdVault Team</span>
+          <div class="flex justify-between px-4 py-3 bg-slate-50/50">
+              <span class="text-sm text-slate-500 font-medium">Status</span>
+              <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold uppercase">Active</span>
           </div>
       </div>
 
-      <a href="https://t.me/AdVault_Channel" target="_blank" class="telegram-full-btn">
-          <i class="fab fa-telegram-plane text-lg"></i>
-          <span>Official Channel</span>
+      <a href="#" id="about-channel-btn" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#229ED9] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-blue-200 hover:scale-[1.02] active:scale-95 transition-all">
+          <i class="fab fa-telegram-plane text-xl"></i>
+          <span>Join Official Channel</span>
       </a>
       
-      <div class="mt-6 text-[10px] text-slate-300">
-          &copy; 2026 AdVault Inc. All rights reserved.
-      </div>
+      <p class="mt-6 text-[10px] text-slate-300 font-medium">
+          &copy; 2026 AdVault Inc. Secured System.
+      </p>
 
     </div>
-  </div>
+</div>
  <div id="notifOverlay" class="notif-overlay" onclick="closeNotificationsModal()">
   <div class="notif-panel" onclick="event.stopPropagation()">
     
@@ -5410,26 +5399,34 @@ body.header-hidden .section,
     // ===================== ADDED FEATURES =====================
     
     function renderMarquee() {
-        // 1. Get the text from Admin Settings (based on User Country or Default)
-        const text = adminSettings.marqueeSettings?.[userCountry] || 
-                     adminSettings.marqueeSettings?.['default'] || 
-                     "Welcome to AdVault! Start earning today.";
+    // 1. Get the text
+    const text = adminSettings.marqueeSettings?.[userCountry] || 
+                 adminSettings.marqueeSettings?.['default'] || 
+                 "Welcome to AdVault! Start earning today.";
 
-        // 2. Target the NEW Home Ticker (The Pill)
-        const homeTicker = document.getElementById('marqueeTextHome');
-        if (homeTicker) {
-            homeTicker.textContent = text;
-        }
+    // 2. Target the Home Ticker
+    const homeTicker = document.getElementById('marqueeTextHome');
+    if (homeTicker) {
+        homeTicker.textContent = text;
 
-        // 3. Target the OLD Marquee (Just in case it exists elsewhere)
-        const oldMarquee = document.getElementById('marqueeText');
-        if (oldMarquee) {
-            oldMarquee.textContent = text;
-            // Update animation speed based on text length
-            oldMarquee.style.animationDuration = `${Math.max(10, text.length / 5)}s`;
-        }
+        // --- DYNAMIC SPEED CALCULATION ---
+        // Formula: Base time (10s) + 0.3 seconds per character
+        // Short text (20 chars): 10 + 6 = 16s
+        // Long text (100 chars): 10 + 30 = 40s
+        const charCount = text.length;
+        const dynamicDuration = 10 + (charCount * 0.3);
+        
+        homeTicker.style.animationDuration = `${dynamicDuration}s`;
     }
 
+    // 3. Target the Old Marquee (if exists)
+    const oldMarquee = document.getElementById('marqueeText');
+    if (oldMarquee) {
+        oldMarquee.textContent = text;
+        const dynamicDuration = 10 + (text.length * 0.3);
+        oldMarquee.style.animationDuration = `${dynamicDuration}s`;
+    }
+}
     function renderDynamicPaymentUI() {
         // 1. Profile Display
         const displayContainer = document.getElementById('dynamicPaymentDetailsDisplay');
@@ -6429,25 +6426,34 @@ function dismissDroid(element, animClass) {
     }
 
     function showSection(targetId) {
-    // 1. Reset all sections and nav items
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    console.log("Navigating to:", targetId);
+
+    // 1. Reset ALL sections (Force hide them)
+    document.querySelectorAll('.section, .section-fullscreen').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = ''; // Clear any stuck inline styles
+    });
+
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     
-    // 2. Activate Target
+    // 2. Activate the Target Section
     const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    // 3. Update Bottom Nav
     const targetNavItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-    
-    if (targetSection) targetSection.classList.add('active');
     if (targetNavItem) targetNavItem.classList.add('active');
     
-    // 3. Header Visibility Logic
+    // 4. Handle Top Header Visibility
     const hideHeaderSections = [
         'profile-section', 
         'withdraw-section', 
         'withdrawal-history-section', 
         'earning-history-section', 
         'payment-methods-section',
-        'notif-history-section' // <--- MISSING PART 1: Hides the top header
+        'notif-history-section' 
     ];
     
     if (hideHeaderSections.includes(targetId)) {
@@ -6455,32 +6461,24 @@ function dismissDroid(element, animClass) {
     } else {
         document.body.classList.remove('header-hidden');
     }
-    
-    // 4. Data Loading Triggers
-    
-    // <--- MISSING PART 2: Triggers the list to load
+
+    // 5. Trigger Page Renders
     if (targetId === 'notif-history-section') {
         if(typeof renderNotifHistory === 'function') renderNotifHistory();
     }
-    
-    // ... Existing triggers ...
     if (targetId === 'withdraw-section') {
         if(typeof renderWithdrawPage === 'function') renderWithdrawPage();
         if(typeof fetchWithdrawalHistory === 'function') fetchWithdrawalHistory();
     }
-    
     if (targetId === 'withdrawal-history-section') {
         if(typeof fetchWithdrawalHistory === 'function') fetchWithdrawalHistory();
     }
-    
     if (targetId === 'payment-methods-section') {
         if(typeof renderPaymentMethodsPage === 'function') renderPaymentMethodsPage();
     }
-
     if (targetId === 'earning-history-section') {
         if(typeof renderEarningHistory === 'function') renderEarningHistory();
     }
-
     if (targetId === 'profile-section') {
         if(typeof updateUI === 'function') updateUI();
     }
@@ -6488,7 +6486,7 @@ function dismissDroid(element, animClass) {
 
     async function loadAdSDK() {
         return new Promise((resolve, reject) => {
-            if (typeof show_9661177 === 'function') {
+            if (typeof show_9683040 === 'function') {
                 resolve();
                 return;
             }
@@ -6503,7 +6501,7 @@ function dismissDroid(element, animClass) {
 
             script.onload = () => {
                 clearTimeout(timeout);
-                if (typeof show_9661177 === 'function') {
+                if (typeof show_9683040 === 'function') {
                     resolve();
                 } else {
                     reject(new Error('Ad SDK function not found'));
@@ -6730,7 +6728,7 @@ function hideInstructionsPopup() {
                 try {
                     await loadAdSDK();
                     startAdTimer();
-                    await show_9661177();
+                    await show_9683040();
                     
                     if (!checkAdCompletion()) {
                         return;
@@ -7948,57 +7946,136 @@ async function submitWithdrawal() {
     }
     // --- MISSING ALERT HISTORY FUNCTIONS ---
 
+/* REPLACE YOUR renderNotifHistory FUNCTION WITH THIS */
 function renderNotifHistory() {
+    // 1. Locate the Container
     const list = document.getElementById('notif-history-list');
     if (!list) return;
 
-    // Fetch from Local Storage
-    const history = JSON.parse(localStorage.getItem('advault_notif_history') || '[]');
-    
-    // Clear current list
-    list.innerHTML = '';
+    // 2. Load Data (Crash Proof)
+    let history = [];
+    try {
+        const raw = localStorage.getItem('advault_notif_history');
+        if (raw) history = JSON.parse(raw);
+        if (!Array.isArray(history)) history = [];
+    } catch (e) {
+        history = [];
+    }
+
+    // 3. Render HTML
+    list.innerHTML = ''; // Clear existing
 
     if (history.length === 0) {
         list.innerHTML = `
-            <div class="text-center py-20 opacity-40">
-                <i class="fas fa-bell-slash text-4xl mb-3 text-slate-300"></i>
-                <p class="text-sm text-slate-400">No recent alerts found</p>
+            <div class="flex flex-col items-center justify-center py-20 opacity-50">
+                <div class="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                    <i class="fas fa-bell-slash text-2xl"></i>
+                </div>
+                <h3 class="text-slate-600 font-bold text-lg">No Alerts Yet</h3>
             </div>`;
-        return;
+    } else {
+        list.innerHTML = history.map((item, index) => {
+            let iconClass = "bg-blue-50 text-blue-500";
+            let icon = "fa-bell";
+
+            if (item.type === 'security') { 
+                iconClass = "bg-red-50 text-red-500"; 
+                icon = "fa-exclamation-triangle"; 
+            } else if (item.type === 'earning' || item.type === 'success') { 
+                iconClass = "bg-green-50 text-green-500"; 
+                icon = "fa-check-circle"; 
+            }
+
+            let timeStr = "";
+            try { 
+                timeStr = new Date(item.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); 
+            } catch(e) {}
+
+            return `
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-3 mb-3 animate-fade-in">
+                    <div class="w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center shrink-0">
+                        <i class="fas ${icon} text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-sm font-bold text-slate-800">${item.title || 'Alert'}</h4>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase">${timeStr}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">${item.message || ''}</p>
+                    </div>
+                </div>`;
+        }).join('');
     }
 
-    // Generate List
-    list.innerHTML = history.map(item => {
-        let iconClass = "bg-blue-50 text-blue-500"; // Default
-        let icon = "fa-bell";
-        
-        if (item.type === 'security') { iconClass = "bg-red-50 text-red-500"; icon = "fa-exclamation-triangle"; }
-        if (item.type === 'earning' || item.type === 'success') { iconClass = "bg-green-50 text-green-500"; icon = "fa-check-circle"; }
-
-        const dateObj = new Date(item.time);
-        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        return `
-            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-3 animate-fade-in">
-                <div class="w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center shrink-0">
-                    <i class="fas ${icon} text-sm"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-start">
-                        <h4 class="text-sm font-bold text-slate-800">${item.title}</h4>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase">${timeStr}</span>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">${item.message}</p>
-                </div>
-            </div>`;
-    }).join('');
+    
+    console.log("Render Complete. Items count:", history.length);
 }
-
 function clearNotifHistory() {
     if(confirm("Are you sure you want to delete all history?")) {
         localStorage.removeItem('advault_notif_history');
         renderNotifHistory(); // Re-render to show empty state
     }
+}
+// --- ABOUT MODAL LOGIC ---
+
+/* ================= ABOUT MODAL LOGIC ================= */
+
+function openAboutModal() {
+    const modal = document.getElementById('aboutModal');
+    const card = document.getElementById('aboutModalCard');
+    
+    if (!modal) {
+        console.error("About Modal not found!");
+        return;
+    }
+
+    // 1. Get Data
+    const info = adminSettings.appInfo || {};
+    const version = info.version || "2.5.0";
+    const date = info.lastUpdate || "Jan 2026";
+    const channel = info.channel || "https://t.me/AdVault_Channel";
+
+    // 2. Update Text
+    if (document.getElementById('about-version')) document.getElementById('about-version').textContent = version;
+    if (document.getElementById('about-date')) document.getElementById('about-date').textContent = date;
+    if (document.getElementById('about-channel-btn')) document.getElementById('about-channel-btn').href = channel;
+
+    // 3. FORCE DISPLAY (Overrides any conflicting CSS)
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex'; 
+    modal.style.opacity = '1'; 
+    modal.style.pointerEvents = 'auto';
+    
+    // Animate Card
+    if (card) {
+        card.style.transform = 'scale(1)';
+        card.style.opacity = '1';
+    }
+}
+
+function closeAboutModal() {
+    const modal = document.getElementById('aboutModal');
+    const card = document.getElementById('aboutModalCard');
+    
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+        
+        if (card) card.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }, 300);
+    }
+}
+function openCommunityGroup() {
+    // 1. Get Link from Admin Panel Settings
+    // If Admin hasn't set one, it falls back to your default
+    const groupLink = adminSettings.appInfo?.group || "https://t.me/AdVault_Group";
+    
+    // 2. Open it
+    window.open(groupLink, '_blank');
 }
 </script>
 </body>
